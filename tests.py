@@ -1,7 +1,8 @@
 from unittest import TestCase
 
 from app import app
-from models import db, Cupcake
+from models import db, Cupcake, connect_db
+app.app_context().push()
 
 # Use test database and don't clutter tests with SQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///cupcakes_test'
@@ -9,6 +10,8 @@ app.config['SQLALCHEMY_ECHO'] = False
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
+
+connect_db(app)
 
 db.drop_all()
 db.create_all()
@@ -50,7 +53,7 @@ class CupcakeViewsTestCase(TestCase):
 
     def test_list_cupcakes(self):
         with app.test_client() as client:
-            resp = client.get("/api/cupcakes")
+            resp = client.get("/api/cupcakes/")
 
             self.assertEqual(resp.status_code, 200)
 
@@ -86,7 +89,7 @@ class CupcakeViewsTestCase(TestCase):
 
     def test_create_cupcake(self):
         with app.test_client() as client:
-            url = "/api/cupcakes"
+            url = "/api/cupcakes/"
             resp = client.post(url, json=CUPCAKE_DATA_2)
 
             self.assertEqual(resp.status_code, 201)
