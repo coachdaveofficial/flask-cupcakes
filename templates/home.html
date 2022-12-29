@@ -1,0 +1,46 @@
+{% extends 'base.html' %} 
+
+{% block title %} Cupcakes! {% endblock %} 
+
+{% block content %} 
+
+
+<div class="container mt-4">
+    <h1 class="text-center">Cupcakes</h1>
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="mb-3">
+                <label for="flavor" class="form-label">Flavor</label>
+                <input type="text" class="form-control" id="flavor" placeholder="Vanilla">
+            </div>
+            <div class="mb-3">
+                <label for="size" class="form-label">Size</label>
+                <input type="text" class="form-control" id="size" placeholder="Small">
+            </div>
+            <div class="mb-3">
+                <label for="rating" class="form-label">Rating</label>
+                <input type="number" class="form-control" id="rating" placeholder="5">
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image URL</label>
+                <input type="url" class="form-control" id="image" placeholder="https://example.com">
+            </div>
+        </div>
+        <div class="col">
+            <ul class="list-group">
+                <li class="list-group-item">A second item</li>
+                <li class="list-group-item">A third item</li>
+                <li class="list-group-item">A fourth item</li>
+                <li class="list-group-item">And a fifth one</li>
+              </ul>
+        </div>
+
+
+    </div>
+    
+    
+</div>
+
+
+
+{% endblock %}

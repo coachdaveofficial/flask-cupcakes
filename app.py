@@ -17,6 +17,11 @@ with app.app_context():
 
     db.create_all()
 
+
+@app.route('/')
+def get_homepage():
+    return render_template('home.html')    
+
 @app.route('/api/cupcakes/')
 def get_all_cupcakes():
     '''Return JSON data for all cupcakes in database'''
@@ -40,9 +45,7 @@ def add_cupcake():
     db.session.add(new_cupcake)
     db.session.commit()
 
-    return ( jsonify(cupcake=new_cupcake.to_dict()), 201)
-
-            
+    return ( jsonify(cupcake=new_cupcake.to_dict()), 201)            
 
 @app.route('/api/cupcakes/<int:cupcake_id>')
 def get_cupcake(cupcake_id):
@@ -52,3 +55,30 @@ def get_cupcake(cupcake_id):
 
 
     return jsonify(cupcake=cupcake.to_dict())
+
+@app.route('/api/cupcakes/<int:cupcake_id>/', methods=['PATCH'])
+def update_cupcake(cupcake_id):
+    '''Update a cupcake and return new JSON data for it'''
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+    cupcake.flavor = request.json['flavor']
+    cupcake.size = request.json['size']
+    cupcake.rating = request.json['rating']
+    cupcake.image = request.json['image']
+
+    db.session.commit()
+
+    return jsonify(cupcake=cupcake.to_dict())
+
+
+@app.route('/api/cupcakes/<int:cupcake_id>/', methods=['DELETE'])
+def delete_cupcake(cupcake_id):
+    '''Delete cupcake from db'''
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+    db.session.delete(cupcake)
+    db.session.commit()
+
+    return '{message: "Deleted"}'
+    
+
