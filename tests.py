@@ -1,6 +1,8 @@
 from unittest import TestCase
+import sys
 
 from app import app
+from flask import jsonify
 from models import db, Cupcake, connect_db
 app.app_context().push()
 
@@ -29,6 +31,13 @@ CUPCAKE_DATA_2 = {
     "size": "TestSize2",
     "rating": 10,
     "image": "http://test.com/cupcake2.jpg"
+}
+
+UPDATED_CUPCAKE_DATA = {
+    "flavor": "UpdateTestFlavor",
+    "size": "UpdateTestSize",
+    "rating": 15,
+    "image": "http://test.com/updatedcupcake.jpg"
 }
 
 
@@ -110,3 +119,43 @@ class CupcakeViewsTestCase(TestCase):
             })
 
             self.assertEqual(Cupcake.query.count(), 2)
+
+
+    def test_update_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}/"
+            resp = client.patch(url, json=UPDATED_CUPCAKE_DATA)
+
+            self.assertEqual(resp.status_code, 200)
+
+            data = resp.json
+
+            self.assertEqual(data, {
+                "cupcake": {
+                    "flavor": "UpdateTestFlavor",
+                    "size": "UpdateTestSize",
+                    "rating": 15,
+                    "image": "http://test.com/updatedcupcake.jpg"
+                }
+            })
+
+            self.assertEqual(Cupcake.query.count(), 1)
+
+
+
+    def test_delete_cupcake(self):
+        with app.test_client() as client:
+            url = f"/api/cupcakes/{self.cupcake.id}/"
+            resp = client.delete(url)
+
+            self.assertEqual(resp.status_code, 200)
+
+            data = resp.data.decode('utf-8')
+
+            # don't know what ID we'll get, make sure it's an int & normalize
+            self.assertEqual(data, '{message: "Deleted"}')
+            # del data['cupcake']['id']
+
+            self.assertEqual(Cupcake.query.count(), 0)
+
+    
