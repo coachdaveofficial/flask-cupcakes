@@ -17,7 +17,10 @@
 
     <script src="https://unpkg.com/jquery"></script>
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
-    <script src="flask-cupcakes/static/main.js"></script>
+    <!-- <script src="flask-cupcakes/static/main.js"></script> -->
+    <!-- <script src="/flask-cupcakes/templates/static/main.js"></script> -->
+    <script type="text/javascript" src="{{ url_for('static', filename = 'main.js') }}"></script>
+
 </body>
 
 
