@@ -7,20 +7,16 @@ const $cupcakeList = $("#cupcake-list");
 const $cupcakeDelBtns = $("#del");
 
 function createCupcakeHTML(cupcake) {
-    return `<div class="col-3 m-6">
-            <span id="cupcake-id-${cupcake.id}"></span>
-                <div class="card" style="height: 10rem;">
+    return `<div cupcake-id="${cupcake.id}"> 
                     <img src="${cupcake.image}" class="card-img-top" style="width: 100; height: 200px;"  alt="...">
-                    <div class="card-body">
                         <h5 class="card-title">${cupcake.flavor}</h5>
                         <p class="card-text">Rating: ${cupcake.rating} / Size: ${cupcake.size}</p>
-                        <button id="del"class="btn btn-danger">Delete</button>
-                    </div>
-                </div>
+                        <button id="del" class="btn btn-danger">Delete</button>
+
             </div>`;
 }
 
-async function getAllCupcakes() {
+async function showAllCupcakes() {
 
     const response = await axios ({
         url: `${BASE_URL}/api/cupcakes`,
@@ -71,7 +67,7 @@ async function createNewCupcake(flavor,size,rating,image) {
 }
 
 async function handleFormSubmit(evt){
-    // evt.preventDefault();
+    evt.preventDefault();
     let cupcakeObj = getCupcakeFormData();
     let flavor = cupcakeObj.flavor;
     let size = cupcakeObj.size;
@@ -85,19 +81,30 @@ async function handleFormSubmit(evt){
 }
 
 async function handleDeleteCupcake(evt) {
-    let cupcakeId = $(evt.target).closest('span').id
+    evt.preventDefault();
+
+    let cupcake = $(evt.target).closest('div');
+
+    let cupcakeId = cupcake.attr('cupcake-id');
 
 
     await axios.delete(`${BASE_URL}/api/cupcakes/${cupcakeId}`);
+    cupcake.remove();
 
 
 
 }
 
+// $('button').click(handleDeleteCupcake)
+
+$(document).ready(function() {
+    showAllCupcakes();
+    $("#cupcake-list").on('click', '#del', handleDeleteCupcake)
+
+})
 
 
-$(document).ready(getAllCupcakes)
 
 
-$cupcakeDelBtns.on('click', handleDeleteCupcake);
+
 $addCupcakeForm.on('submit', handleFormSubmit);
